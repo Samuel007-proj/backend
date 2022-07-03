@@ -1,0 +1,25 @@
+GET http://localhost:3001/api/notes/
+###
+GET http://localhost:3001/
+###
+POST http://localhost:3001/api/notes/ HTTP/1.1
+content-Type: application/json
+
+{
+    "content":  "VS Code REST Client is pretty Awesome",
+    "important": false
+}
+###
+DELETE http://localhost:3001/api/notes/4 HTTP/1.1
+
+###
+DELETE  http://localhost:3001/api/persons/:3 HTTP/1.1
+
+###
+POST http://localhost:3001/api/persons/ HTTP/1.1
+content-Type: application/json
+
+{
+    "name": "Samuel Damilare",
+    "number": 13543674587
+}
