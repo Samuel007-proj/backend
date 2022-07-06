@@ -15,7 +15,6 @@ const reqLogger = (req, resp, next) =>{
 
 }
 
-
 app.use(reqLogger)
 app.use(morgan('combined'))
 
@@ -116,6 +115,22 @@ app.post('/api/notes/', (req, resp)=>{
   resp.json(note)
 })
 
+app.put('/api/notes/:id', (req, resp)=>{
+  const body = req.body;
+  const id = Number(req.params.id);
+  const oldNoteIndex = notes.findIndex(n=>n.id === id)
+
+  const newNote = {
+    id: id,
+    content: body.content,
+    date: new Date().toISOString(),
+    important: body.important
+  }
+
+  notes.fill(newNote, oldNoteIndex, oldNoteIndex+1);
+
+  resp.json(newNote);
+})
 //Phonebook
 
 app.get('/api/persons', (req, resp)=>{
@@ -158,13 +173,35 @@ app.post('/api/persons', (req, resp)=>{
   const person = {
     name: body.name,
     number: body.number,
-    id: Math.floor(Math.random()*100)
+    id: persons.length+1
   }
   persons = persons.concat(person);
   resp.json(person);
 })
 
+app.put('/api/persons/:id', (req, resp)=>{
+  const newPerson = req.body;
+  const id = Number(req.params.id);
+  const oldPersonIndex = persons.findIndex(n => n.id === id)
+  let person = {
+    name: newPerson.name,
+    number: newPerson.number,
+    id: id
+  };
 
+  persons.fill(person, oldPersonIndex, oldPersonIndex+1)
+  resp.json(person)
+})
+
+app.post('/api/persons/search', (req, resp)=>{
+  const str = req.body.searchStr;
+  const regexp = new RegExp(`${str}`, 'i')
+  const matches = persons.filter(p=>{
+   if ( regexp.test(p.name)) return p 
+  })
+
+  matches.length ? resp.json(matches) : resp.send(false);
+})
 const PORT = process.env.PORT ||3001;
 app.listen(PORT, ()=>{
     console.log(`Server running on port ${PORT}`)

@@ -11,15 +11,15 @@ content-Type: application/json
 }
 ###
 DELETE http://localhost:3001/api/notes/4 HTTP/1.1
-
 ###
-DELETE  http://localhost:3001/api/persons/:3 HTTP/1.1
-
+DELETE  http://localhost:3001/api/persons/54 HTTP/1.1
 ###
-POST http://localhost:3001/api/persons/ HTTP/1.1
+GET http://localhost:3001/api/persons/
+### 
+PUT  http://localhost:3001/api/persons/ HTTP/1.1
 content-Type: application/json
 
 {
     "name": "Samuel Damilare",
-    "number": 13543674587
+    "number": 1354587
 }
