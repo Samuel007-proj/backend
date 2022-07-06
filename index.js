@@ -17,6 +17,7 @@ const reqLogger = (req, resp, next) =>{
 
 app.use(reqLogger)
 app.use(morgan('combined'))
+app.use(express.static('build'))
 
 morgan.token('type', function (req, res) { return req.headers['content-type'] })
 
