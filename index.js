@@ -64,7 +64,7 @@ let persons = [
   }
 ]
 app.get('/', (req, resp) => {
-    resp.send('<h1>Hello nodemon</h1>')
+  resp.send(notes)
 })
 
 app.get('/api/notes/', (req, resp)=>{
