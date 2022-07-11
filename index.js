@@ -1,7 +1,11 @@
+require('dotenv').config()
 const express = require('express');
 const morgan = require('morgan');
-const cors = require('cors')
+const cors = require('cors');
+const mongoose = require('mongoose');
+
 const app = express();
+
 
 app.use(cors())
 app.use(express.json())
@@ -20,6 +24,8 @@ app.use(morgan('combined'))
 app.use(express.static('build'))
 
 morgan.token('type', function (req, res) { return req.headers['content-type'] })
+
+const Note = require('./models/note')
 
 let notes = [
     {
@@ -69,18 +75,20 @@ app.get('/', (req, resp) => {
 })
 
 app.get('/api/notes/', (req, resp)=>{
-  resp.send(notes)
-})
+  Note.find({}).then(notes => {
+    resp.json(notes)
+    })
+  })
 
 app.get('/api/notes/:id', (req, resp)=>{
-    const id = Number(req.params.id)
-    const note = notes.find(note => note.id === id)
-    if(note){
-       resp.json(note)
-    }else{
-        resp.status(404).end()
-    }
-    
+    Note.findById(req.params.id)
+        .then(note => {
+          if(note){resp.json(note)}
+          else{resp.status(404).end()}
+    }).catch(err=>{
+      console.log(err)
+      resp.status(500).end()
+    })
 })
 app.delete('/api/notes/:id', (req, resp) =>{
     const id = Number(req.params.id)
@@ -105,15 +113,16 @@ app.post('/api/notes/', (req, resp)=>{
     })
   }
 
-  const note = {
+  const note = new Note({
     content: body.content,
     important: body.important || false,
     date: new Date().toISOString(),
     id: generateId()
-  }
+      });
 
-  notes = notes.concat(note)
-  resp.json(note)
+  note.save().then(savedNote =>{
+    resp.json(savedNote)
+  })
 })
 
 app.put('/api/notes/:id', (req, resp)=>{
@@ -134,13 +143,17 @@ app.put('/api/notes/:id', (req, resp)=>{
 })
 //Phonebook
 
+const Person = require('./models/phonebookdb');
+
 app.get('/api/persons', (req, resp)=>{
-  resp.send(persons)
+  Person.find({}).then(people =>{
+    resp.json(people)
+  })
 })
 
 app.get('/api/persons/:id', (req, resp)=>{
-  const id  = Number(req.params.id)
-  const person = persons.find(p => p.id === id)
+  const id  = req.params.id;
+  const person = Person.findById(id);
 
   if(person){
     resp.send(`
@@ -152,7 +165,7 @@ app.get('/api/persons/:id', (req, resp)=>{
 })
 
 app.get('/info', (req, resp)=>{
-  resp.send(`<h4>Phonebook has info for ${persons.length} people</h4>
+  resp.send(`<h4>Phonebook has info for ${Persons.find({}).length} people</h4>
   <p>${new Date().toString()}</p>`);
 })
 
@@ -171,12 +184,12 @@ app.post('/api/persons', (req, resp)=>{
     resp.end();
   }
 
-  const person = {
+  const person = new Person({
     name: body.name,
     number: body.number,
     id: persons.length+1
-  }
-  persons = persons.concat(person);
+  })
+  person.save();
   resp.json(person);
 })
 
@@ -203,7 +216,7 @@ app.post('/api/persons/search', (req, resp)=>{
 
   matches.length ? resp.json(matches) : resp.send(false);
 })
-const PORT = process.env.PORT ||3001;
+const PORT = process.env.PORT;
 app.listen(PORT, ()=>{
     console.log(`Server running on port ${PORT}`)
 })
