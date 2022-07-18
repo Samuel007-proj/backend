@@ -1,25 +1,37 @@
 GET http://localhost:3001/api/notes/
 ###
-GET http://localhost:3001/api/notes/62cafcdc844aece508e73eea
+GET http://localhost:3001/api/notes/62d51b56a78adc74eb3c2c30
 ###
-POST http://localhost:3001/api/notes/ HTTP/1.1
+POST  http://localhost:3001/api/notes/ HTTP/1.1
 content-Type: application/json
 
 {
-    "content":  "VS Code REST Client is pretty Awesome",
+    "content":"Working on Backend directory is awesome",
+    "date": "2022-07-10T16:22:52.782Z",
     "important": false
 }
 ###
-DELETE http://localhost:3001/api/notes/4 HTTP/1.1
+DELETE http://localhost:3001/api/notes/62cd631046f3e6582461373f HTTP/1.1
 ###
-DELETE  http://localhost:3001/api/persons/54 HTTP/1.1
+DELETE  http://localhost:3001/api/persons/62cbfecfd17141cb50799b24 HTTP/1.1
 ###
 GET http://localhost:3001/api/persons/
-### 
+###
+GET http://localhost:3001/api/persons/62c8209fbcdd7deb7c9df467
+###
+GET http://localhost:3001/api/persons/info
+###
 POST  http://localhost:3001/api/persons/ HTTP/1.1
 content-Type: application/json
 
 {
     "name": "Samuel Damilare",
-    "number": 1354587
+    "number": "234-18537491"
+}
+###
+POST  http://localhost:3001/api/persons/search HTTP/1.1
+content-Type: application/json
+
+{
+    "searchStr": "rt"
 }
