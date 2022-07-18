@@ -1,7 +1,5 @@
 const personsRouter = require('express').Router()
 const Person = require('../models/phonebookdb')
-const { info } = require('../utils/logger')
-
 
 personsRouter.get('/', (req, resp, next) => {
     Person.find({}).then(people => {
@@ -10,7 +8,6 @@ personsRouter.get('/', (req, resp, next) => {
 })
 
 personsRouter.get('/info', (req, resp, next) => {
-    info('reading')
     Person.countDocuments({})
         .then(count => {
             resp.send(`<h4>Phonebook has info for ${count} people</h4>
